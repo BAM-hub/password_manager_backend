@@ -15,7 +15,11 @@ export class AuthService {
 
   async signIn(name: string, password: string) {
     const user = await this.userService.findOne(name);
-    if (user.password === password) {
+    if (!user) {
+      throw new UnauthorizedException('Invalid User');
+    }
+
+    if (user.password !== password) {
       throw new UnauthorizedException();
     }
     const payload = { sub: user.id, name: user.name };
